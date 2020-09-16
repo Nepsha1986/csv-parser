@@ -11,3 +11,5 @@ To understand how it works, you can run "node example.js" from the root of the f
 2. Copy example.js and give in ${newname}.js, change values in ${newname}.js according to new transformation task.
 3. Run "node ${newname}.js".
 4. Open "output" to see transformed file.
+
+Attention!!!: You should update "UPCToProductCode" function according to new requirements ( We have array of UPCs, but productCode is unique );
