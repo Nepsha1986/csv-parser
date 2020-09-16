@@ -1,4 +1,8 @@
 module.exports = {
+    /*
+     * Changes UPC's code to productCode of json Object according to mapping json.
+     */
+    // TODO: Update this code according to new requirements ( We have array of UPCs, but productCode is unique )
     UPCToProductCode: function (json, mappingJson) {
         return json.map(productItem => {
             mappingJson.forEach(item => {
@@ -12,6 +16,9 @@ module.exports = {
         });
     },
 
+    /*
+     * Removes unneeded keys and properties from json Object
+     */
     removeRows: function (json, rows = []) {
         return json.map(item => {
             rows.forEach(row => {
@@ -22,6 +29,9 @@ module.exports = {
         });
     },
 
+    /*
+    * Transforms properties in json Object from string to array.
+    */
     renameKeys: function (json, keyMap) {
         return json.map(item => {
             for (let key of keyMap.keys()) {
@@ -32,6 +42,9 @@ module.exports = {
         });
     },
 
+    /*
+     * Transforms properties in json Object from string to array.
+     */
     propsToArray: function (json, props = [], separator = ';\n') {
         return json.map(item => {
             props.forEach(i => {

@@ -4,4 +4,6 @@ node_modules/
 input/*
 output/*
 !input/.gitkeep
+!input/mapping-example.csv
+!input/offers-example.csv
 !output/.gitkeep
