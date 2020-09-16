@@ -1,7 +1,8 @@
 const csv = require('csvtojson');
 const fs = require('fs');
 
-const csvFilePath = './input/offers.csv';
+const offersSCV = './input/offers.csv';
+const UPCMapping = './input/KROGERMAL_SEMI_product_code-UPC_mapping.csv';
 
 const unusedProps = [
     'Created On',
@@ -21,6 +22,19 @@ const categoriesMap = new Map([
     ['Categories', 'сategories'],
     ['Offer Name', 'productName']
 ]);
+
+const UPCToProductCode = (json, mappingJson) => {
+    return json.map(productItem => {
+        mappingJson.forEach(item => {
+            if( productItem['UPCs'] === item['universalProductCode'] ) {
+                productItem['productCode'] = item['product_code'];
+                delete productItem['UPCs'];
+            }
+        });
+
+        return productItem;
+    });
+};
 
 const removeRows = (json, rows = []) => {
     return json.map(item => {
@@ -51,10 +65,24 @@ const propsToArray = (json, props = [], separator = ';\n') => {
     });
 };
 
-csv().fromFile(csvFilePath).then((jsonObj) => {
+let runTransformation = async () => {
+    let catalogToJson = await csv().fromFile(offersSCV).then((jsonObj) => jsonObj);
+    let UPCMappingToJson = await csv().fromFile(UPCMapping).then((jsonObj) => jsonObj);
+
+    return UPCToProductCode(
+        propsToArray(
+            renameKeys(
+                removeRows(catalogToJson, unusedProps),
+                categoriesMap
+            ),
+            ['сategories']
+        )
+        , UPCMappingToJson);
+};
+
+runTransformation().then((jsObj => {
     fs.writeFileSync(
         './output/offers.json',
-        JSON.stringify(propsToArray(renameKeys(removeRows(jsonObj, unusedProps), categoriesMap), ['сategories']))
+        JSON.stringify(jsObj)
     );
-});
-
+}));
